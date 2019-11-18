@@ -1,4 +1,7 @@
+tf.ENV.set('WEBGL_PACK', false);
 console.log(tf.getBackend());
+
+//tf.enableDebugMode();
 
 // Layer de preprocesamiento
 class PreprocessLayer extends tf.layers.Layer {
@@ -10,7 +13,7 @@ class PreprocessLayer extends tf.layers.Layer {
 
     call(input, kwargs) {
         const mean_pixel = tf.tensor1d([123.68, 116.779, 103.939]);
-        const result = tf.mul(tf.scalar(255), input);
+        const result = tf.mul(tf.scalar(255), input[0]);
         return tf.sub(result, mean_pixel);
     }
 
@@ -18,7 +21,7 @@ class PreprocessLayer extends tf.layers.Layer {
 }
 // Primero vendrá el Encoder.
 // Las layers estan en orden
-
+const encoder = tf.tidy(()=>{
 const inputEncoder = tf.input({shape: [null, null, 3]});
 const preprocess = new PreprocessLayer();
 const conv2d_1_1 = tf.layers.conv2d({
@@ -137,13 +140,14 @@ output = conv2d_3_4.apply(output);
 output = maxPooling_3.apply(output);
 output = conv2d_4_1.apply(output);
 
-const encoder = tf.model({
+return tf.model({
     inputs: inputEncoder,
     outputs: output
 });
+});
 
 // Ahora viene el DECODER
-
+const decoder = tf.tidy(() => {
 const inputDecoder = tf.input({shape: [null, null, 512]});
 
 const deConv2d_4_1 = tf.layers.conv2d({
@@ -244,13 +248,60 @@ outputDecoder = upSampling1.apply(outputDecoder);
 outputDecoder = deConv2d_1_2.apply(outputDecoder);
 outputDecoder = deConv2d_1_1.apply(outputDecoder);
 
-const decoder = tf.model({
+return tf.model({
     inputs: inputDecoder,
     outputs: outputDecoder
 });
+});
 
-console.log(decoder);
+function adain(contentFeatures, styleFeatures) {
+    const contentMoments = tf.momments(contentFeatures, [1,2], true);
+    const styleMoments = tf.momments(styleFeatures, [1,2], true);
+    return tf.batchNorm(
+        contentFeatures,
+        contentMoments.mean,
+        contentMoments.variance,
+        styleMoments.mean,
+        tf.sqrt(styleMoments.variance),
+        1e-5)
+}
 
+// Desde aqui pasa a ser las funciones para la vista.
+const contentImg = document.getElementById('content');
+const styleImg = document.getElementById('style');
+function loadImage(event, imgElement) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      imgElement.src = e.target.result;
+    };
+    reader.readAsDataURL(event.target.files[0]);
+  }
+
+function loadContent(event) {
+    loadImage(event, contentImg);
+}
+
+function loadStyle(event) {
+    loadImage(event, styleImg);
+}
+
+async function styleTransfer(content, style, alpha=1) {
+    const contentEncoded = await tf.tidy(() => {
+        return encoder.predict(tf.browser.fromPixels(content).toFloat().div(tf.scalar(255)).expandDims());
+    });
+    //const styleEncoded = await tf.tidy(() => {
+    //    return encoder.predict(tf.browser.fromPixels(style).toFloat().div(tf.scalar(255)).expandDims());
+    //});
+    console.log(tf.memory());
+    //const adainResult = adain(contentEncoded, styleEncoded) * alpha + (1-alpha) * contentEncoded;
+    //const decoded = decoder.predict(adainResult);
+    //return decoded
+}
+
+async function stylize(alpha=1) {
+    const stylized =  await styleTransfer(contentImg, styleImg, alpha);
+    console.log(stylized);
+}
 
 
 
