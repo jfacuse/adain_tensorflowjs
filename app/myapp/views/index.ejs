@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Style Transfer</title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+  </head>
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
+    <script type="text/javascript" src="./javascripts/styleTransfer.js" defer></script>
+    <h1>Style Transfer</h1>
+    <div class="contentDiv">
+      <label
+        >Upload Content <input type="file" onchange="loadContent(event)"
+      /></label>
+      <img
+        id="content"
+        class="image"
+        crossorigin="anonymous"
+        src="./images/content/elefante.jpg"
+      />
+    </div>
+    <div class="styleDiv">
+      <label
+        >Upload Style <input type="file" onchange="loadStyle(event)"
+      /></label>
+      <img
+        id="style"
+        class="image"
+        crossorigin="anonymous"
+        src="./images/style/surf.jpg"
+      />
+    </div>
+    <div>
+      <button onclick="stylize()">Estilizar</button>
+    </div>
+  </body>
+</html>
