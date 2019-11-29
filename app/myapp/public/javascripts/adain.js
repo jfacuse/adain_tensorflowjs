@@ -1,8 +1,8 @@
 import * as tf from '@tensorflow/tfjs';
 
 export function adain(contentFeatures, styleFeatures) {
-    const contentMoments = tf.momments(contentFeatures, [1,2], true);
-    const styleMoments = tf.momments(styleFeatures, [1,2], true);
+    const contentMoments = tf.moments(contentFeatures, [1,2], true);
+    const styleMoments = tf.moments(styleFeatures, [1,2], true);
     return tf.batchNorm(
         contentFeatures,
         contentMoments.mean,

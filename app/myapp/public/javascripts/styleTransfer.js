@@ -1,7 +1,6 @@
 //const tf = require('@tensorflow/tfjs-node-gpu');
-tf.ENV.set('WEBGL_PACK', false);
-tf.enableDebugMode();
-
+//tf.ENV.set('WEBGL_PACK', false);
+//tf.enableDebugMode();
 class Lambda extends tf.layers.Layer {
     constructor() {
         super({});
@@ -21,8 +20,12 @@ tf.serialization.registerClass(Lambda);
 const contentImg = document.getElementById('content');
 const styleImg = document.getElementById('style');
 let encoder;
+let decoder;
 async function setup() {
-    encoder = await tf.loadLayersModel('../models/content_encoder/model.json')
+    encoder = await tf.loadLayersModel('../models/content_encoder/model.json');
+    decoder = await tf.loadLayersModel('../models/decoder/model.json');
+    console.log(encoder);
+    console.log(decoder);
 }
 setup();
 function adain(contentFeatures, styleFeatures) {
