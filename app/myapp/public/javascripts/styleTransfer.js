@@ -1,6 +1,9 @@
 //const tf = require('@tensorflow/tfjs-node-gpu');
 //tf.ENV.set('WEBGL_PACK', false);
 //tf.enableDebugMode();
+
+//tf.setBackend('cpu')
+console.log(tf.getBackend())
 class Lambda extends tf.layers.Layer {
     constructor() {
         super({});
@@ -23,14 +26,14 @@ let encoder;
 let decoder;
 async function setup() {
     encoder = await tf.loadLayersModel('../models/content_encoder/model.json');
-    decoder = await tf.loadLayersModel('../models/decoder/model.json');
+    //decoder = await tf.loadLayersModel('../models/decoder/model.json');
     console.log(encoder);
     console.log(decoder);
 }
 setup();
 function adain(contentFeatures, styleFeatures) {
-    const contentMoments = tf.momments(contentFeatures, [1,2], true);
-    const styleMoments = tf.momments(styleFeatures, [1,2], true);
+    const contentMoments = tf.moments(contentFeatures, [1,2], true);
+    const styleMoments = tf.moments(styleFeatures, [1,2], true);
     return tf.batchNorm(
         contentFeatures,
         contentMoments.mean,
@@ -57,7 +60,13 @@ function loadStyle(event) {
 async function styleTransfer(content, style, alpha=1) {
     //console.log(encoder);
     const contentEncoded = await tf.tidy(() => {
-        return encoder.predict(tf.browser.fromPixels(content).toFloat().div(tf.scalar(255)).expandDims());
+        const toPredict = tf.browser.fromPixels(content).toFloat().div(tf.scalar(255)).expandDims();
+        const shortDim = Math.min(toPredict.shape[1], toPredict.shape[2]);
+        const scale = 512/shortDim
+        const size = [Math.floor(toPredict.shape[1]*scale), Math.floor(toPredict.shape[2]*scale)]
+        const resized = tf.image.resizeBilinear(toPredict, size)
+        //console.log(resized);
+        return encoder.predict(resized);
     });
     //const styleEncoded = await tf.tidy(() => {
     //    return encoder.predict(tf.browser.fromPixels(style).toFloat().div(tf.scalar(255)).expandDims());
