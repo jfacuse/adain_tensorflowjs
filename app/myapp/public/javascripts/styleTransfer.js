@@ -26,7 +26,7 @@ let encoder;
 let decoder;
 async function setup() {
     encoder = await tf.loadLayersModel('../models/content_encoder/model.json');
-    //decoder = await tf.loadLayersModel('../models/decoder/model.json');
+    decoder = await tf.loadLayersModel('../models/decoder2/model.json');
     console.log(encoder);
     console.log(decoder);
 }
@@ -59,15 +59,21 @@ function loadStyle(event) {
 }
 async function styleTransfer(content, style, alpha=1) {
     //console.log(encoder);
-    const contentEncoded = await tf.tidy(() => {
-        const toPredict = tf.browser.fromPixels(content).toFloat().div(tf.scalar(255)).expandDims();
-        const shortDim = Math.min(toPredict.shape[1], toPredict.shape[2]);
-        const scale = 512/shortDim
-        const size = [Math.floor(toPredict.shape[1]*scale), Math.floor(toPredict.shape[2]*scale)]
-        const resized = tf.image.resizeBilinear(toPredict, size)
-        //console.log(resized);
+    await tf.nextFrame();
+    const toPredict = tf.browser.fromPixels(content).toFloat().div(tf.scalar(255)).expandDims();
+    await tf.nextFrame();
+    const shortDim = Math.min(toPredict.shape[1], toPredict.shape[2]);
+    await tf.nextFrame();
+    const scale = 512/shortDim
+    await tf.nextFrame();
+    const size = [Math.floor(toPredict.shape[1]*scale), Math.floor(toPredict.shape[2]*scale)]
+    await tf.nextFrame();
+    const resized = tf.image.resizeBilinear(toPredict, size)
+    await tf.nextFrame();
+    let contentEncoded = await tf.tidy(() => {
         return encoder.predict(resized);
     });
+    return contentEncoded
     //const styleEncoded = await tf.tidy(() => {
     //    return encoder.predict(tf.browser.fromPixels(style).toFloat().div(tf.scalar(255)).expandDims());
     //});
