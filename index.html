@@ -1,21 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Style Transfer</title>
-        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
-        <script src="main.js" defer></script>
-    </head>
-    <body>
-        <div class="contentDiv">
-            <label>Upload Content <input type="file" onchange="loadContent(event)"></label>
-            <img id="content" class="image" crossorigin="anonymous" src="images/content/elefante.jpg">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
+
+    <title>Style Transfer using AdaIN</title>
+  </head>
+  <style>
+    .centered {
+      margin: auto;
+      display: block;
+    }
+  </style>
+  <body>
+    <div class="container">
+      <div class="row" style="justify-content: center;">
+        <p class="h1">Style Transfer using AdaIN</p>
+      </div>
+      <div class="row justify-content-around">
+        <div class="d-flex flex-column justify-content-center">
+          <img
+            id="content-img"
+            class="centered"
+            src="images/chicago.jpg"
+            height="256"
+          />
+          <label for="content" class="btn btn-primary"
+            >Select Content Image</label
+          >
+          <input
+            type="file"
+            id="content"
+            style="visibility:hidden;"
+            accept="image/x-png,image/gif,image/jpeg"
+          />
         </div>
-        <div class="styleDiv">
-            <label>Upload Style <input type="file" onchange="loadStyle(event)"></label>
-            <img id="style" class="image" crossorigin="anonymous" src="images/style/surf.jpg">
+        <div class="d-flex flex-column justify-content-center">
+          <img
+            id="style-img"
+            class="centered"
+            crossorigin="anonymous"
+            src="images/seaport.jpg"
+            height="256"
+          />
+          <label for="style" class="btn btn-primary">Select Style Image</label>
+          <input
+            type="file"
+            id="style"
+            style="visibility:hidden;"
+            accept="image/x-png,image/gif,image/jpeg"
+          />
         </div>
-        <div>
-            <button onclick="stylize()">Estilizar</button>
+      </div>
+
+      <div class="row justify-content-center">
+        <div class="col-5 text-center">
+          Change Style image style
+          <input
+            type="range"
+            min="80"
+            max="280"
+            value="256"
+            id="style-img-size"
+            class="custom-range"
+          />
+          <br />
+          <br />
+          Stylization Strength
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value="100"
+            id="stylization-strength"
+            class="custom-range"
+          />
+          <br />
+          <br />
+          <button id="stylize-button" type="button" class="btn btn-primary">
+            Estilizar
+          </button>
         </div>
-    </body>
+      </div>
+      <div class="row">
+        <div class="col">
+          <canvas id="stylized" class="centered"></canvas>
+        </div>
+      </div>
+      <div
+        class="row my-4 justify-content-center"
+        id="style-transfer-status"
+        hidden
+      >
+        <div class="spinner-border text-primary mx-1" role="status"></div>
+        <span id="status-message"></span>
+      </div>
+    </div>
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+      integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+      integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+      integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+      crossorigin="anonymous"
+    ></script>
+    <script src="bundle.js"></script>
+  </body>
 </html>
