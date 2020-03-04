@@ -25,7 +25,7 @@
   </style>
   <body>
     <div class="container">
-      <div class="row" style="justify-content: center;">
+      <div class="row my-4" style="justify-content: center;">
         <p class="h1">Style Transfer using AdaIN</p>
       </div>
       <div class="row justify-content-around">
@@ -105,6 +105,65 @@
       >
         <div class="spinner-border text-primary mx-1" role="status"></div>
         <span id="status-message"></span>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+          <h3>How this works?</h3>
+          <p>
+            This website uses a technique called 'Style Transfer', which use
+            neural networks to transfer the style of an image (like a painting)
+            to another image (like a photo). Specifically, I used the method
+            proposed on the paper
+            <a href="https://arxiv.org/abs/1703.06868"
+              >Arbitrary Style Transfer in Real-time with Adaptive Instance
+              Normalization </a
+            >, which uses a layer called AdaIN to perform the style transfer.
+          </p>
+          <h3>How is it done?</h3>
+          <p>
+            In order to use neural networks directly on the browser, I use
+            <a href="https://www.tensorflow.org/js">TensorflowJS</a>
+            to load the NNs, and then usign the nets I predict the stylized
+            image. The AdaIN function is also made using the Tfjs API. The cool
+            thing about usign TensorflowJs is that you run all the computation
+            directly on your device, so all the data that you upload here stays
+            only inside your browser.
+          </p>
+          <p>
+            To create the website, I used
+            <a href="https://github.com/mattdesl/budo">budo</a> to create a fast
+            development server, and Bootstrap to stylize the website. Budo is an
+            easy way to have a browserify project without any difficult
+            configurations. Bootstrap is a nice tool to stylize websites, and
+            while I still prefer writing my own stylesheets, it is good to do a
+            nice responsive layout without wasting too much time.
+          </p>
+          <p>
+            All this page was inspired in another
+            <a href="https://reiinakano.com/arbitrary-image-stylization-tfjs/"
+              >style transfer on browser</a
+            >
+            implementation, and I used it as a reference when I had bugs or
+            other problems. Please, go and check it out!
+          </p>
+          <h3>Can I run this on my own computer?</h3>
+          <p>
+            Yes! All the code is available in my
+            <a href="https://github.com/InfiniteDreamX/adain_tensorflowjs"
+              >github</a
+            >
+            repository. Just clone it and follow the instructions in the README.
+          </p>
+          <h3>About Me</h3>
+          <p>
+            My name is Jorge Perez Facuse, and I'm an undergraduate student of
+            computer science in the Pontifical Catholic University of Chile.
+            This is a proyect that I made while researching about Style Transfer
+            with my teacher Denis Parra, to know how to use this technique in
+            the browser. If you want to contact me, my e-mail is
+            jiperez11@uc.cl!
+          </p>
+        </div>
       </div>
     </div>
     <script
