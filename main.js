@@ -101,6 +101,7 @@ document.getElementById('stylize-button').onclick = async () => {
   // Desactivar el boton de estilizado primero
   stylizeButton.disabled = true;
   styleTransferStatus.hidden = false;
+
   if (!encoder || !decoder) {
     changeStatus('Loading encoder');
     // console.log(tf.memory());
@@ -111,11 +112,13 @@ document.getElementById('stylize-button').onclick = async () => {
     decoder = await tf.loadLayersModel('adain_decoder/decoder/model.json');
     // console.log(tf.memory());
   }
+
   await tf.nextFrame();
   // const styleTensor = tf.browser.fromPixels(styleImage);
   // const contentTensor = tf.browser.fromPixels(contentImage);
   // coral(styleTensor, contentTensor);
   changeStatus('Generating content representation');
+
   let bottleneck = await tf.tidy(() => {
     return encoder.predict(
       tf.browser
@@ -125,10 +128,9 @@ document.getElementById('stylize-button').onclick = async () => {
         .expandDims()
     );
   });
-  // console.log(tf.memory());
+
   await tf.nextFrame();
-  // console.log('Generando representacion de estilo');
-  await tf.nextFrame();
+  
   const contentBottleneck = bottleneck;
   changeStatus('Generating style representation');
   bottleneck = await tf.tidy(() => {
@@ -140,24 +142,28 @@ document.getElementById('stylize-button').onclick = async () => {
         .expandDims()
     );
   });
-  // console.log(tf.memory());
+
   await tf.nextFrame();
   const styleBottleneck = bottleneck;
   changeStatus('Transfering style using AdaIN');
   await tf.nextFrame();
+
   let resultAdain = tf.tidy(() => adain(contentBottleneck, styleBottleneck));
   resultAdain = resultAdain.mul(styleStrength.value/100).add(contentBottleneck.mul(1-styleStrength.value/100));
+
   tf.dispose(contentBottleneck);
   tf.dispose(styleBottleneck);
-  await tf.nextFrame();
   changeStatus('Decoding the output');
   await tf.nextFrame();
+
   bottleneck = await tf.tidy(() => {
     return tf.clipByValue(decoder.predict(resultAdain).squeeze(), 0, 1);
   });
+
   changeStatus('Drawing the image on the canvas');
   await tf.nextFrame();
   await tf.browser.toPixels(bottleneck, stylized);
+  
   tf.dispose(bottleneck);
   tf.dispose(resultAdain);
   changeStatus('');
