@@ -104,19 +104,14 @@ document.getElementById('stylize-button').onclick = async () => {
 
   if (!encoder || !decoder) {
     changeStatus('Loading encoder');
-    // console.log(tf.memory());
     encoder = await tf.loadLayersModel(
       'adain_encoder/content_encoder/model.json'
     );
     changeStatus('Loading decoder');
     decoder = await tf.loadLayersModel('adain_decoder/decoder/model.json');
-    // console.log(tf.memory());
   }
 
   await tf.nextFrame();
-  // const styleTensor = tf.browser.fromPixels(styleImage);
-  // const contentTensor = tf.browser.fromPixels(contentImage);
-  // coral(styleTensor, contentTensor);
   changeStatus('Generating content representation');
 
   let bottleneck = await tf.tidy(() => {
@@ -163,7 +158,7 @@ document.getElementById('stylize-button').onclick = async () => {
   changeStatus('Drawing the image on the canvas');
   await tf.nextFrame();
   await tf.browser.toPixels(bottleneck, stylized);
-  
+
   tf.dispose(bottleneck);
   tf.dispose(resultAdain);
   changeStatus('');
