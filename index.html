@@ -112,12 +112,18 @@
           <p>
             This website uses a technique called 'Style Transfer', which use
             neural networks to transfer the style of an image (like a painting)
-            to another image (like a photo). Specifically, I used the method
+            to another image (like a photo).
+          </p>
+          <h3>Original Paper</h3>
+          <p>
+            I used the method
             proposed on the paper
             <a href="https://arxiv.org/abs/1703.06868"
               >Arbitrary Style Transfer in Real-time with Adaptive Instance
               Normalization </a
-            >, which uses a layer called AdaIN to perform the style transfer.
+            > by Xun Huang & Serge Belongie, which uses an autoencoder architecture
+              and an Adaptive Instance Normalization(AdaIN) to perform the style transfer. 
+              If you want to know more, please go and read the paper!
           </p>
           <h3>How is it done?</h3>
           <p>
@@ -138,13 +144,16 @@
             while I still prefer writing my own stylesheets, it is good to do a
             nice responsive layout without wasting too much time.
           </p>
+          <h3>Inspiration</h3>
           <p>
             All this page was inspired in another
             <a href="https://reiinakano.com/arbitrary-image-stylization-tfjs/"
               >style transfer on browser</a
             >
-            implementation, and I used it as a reference when I had bugs or
-            other problems. Please, go and check it out!
+            implementation, created by Reiichiro Nakano. I used it as a reference of style, when I had bugs or
+            other problems and even when selecting budo as development server. The principal difference between the two
+            implementations is that I used an AdaIN model which I converted to TensorflowJS, while Reiichiro's implementation uses
+            another paper and also created a distilled model that is lighter. Please, go and check it out!
           </p>
           <h3>Can I run this on my own computer?</h3>
           <p>
